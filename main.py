@@ -3,12 +3,11 @@ from datetime import timedelta, datetime
 
 import Graph
 from Truck import Truck
-from Packages import loadPackageData
 from utils import Utils
 
 from hashtable import print_search_result, get_packages
 from hashtable import HashTable
-packageHashTable = loadPackageData('Data/package_file.csv')
+packageHashTable = Utils.loadPackageData('Data/package_file.csv')
 
 
 def ui():
@@ -19,11 +18,11 @@ def ui():
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
         if package:
-            print("Package ID: {}, Destination: {}".format(package[0], package[2]))
+            print("Package ID: {}, Destination: {}".format(package.ID, package.destination))
 
             #call for get packages and to search packages
-            package_hashtable = get_packages("Data/package_file.csv")
-            print_search_result(package_hashtable, "1")
+            #package_hashtable = get_packages("Data/package_file.csv")
+            #print_search_result(package_hashtable, "1")
 
     truck1 = Truck(truck_id=1, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
     truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
@@ -70,6 +69,7 @@ def ui():
         truck1.load_packages(all_packages)
         truck2.load_packages(all_packages)
         truck3.load_packages(all_packages)
+
         #truck1.load_trucks_and_get_best_route()
         #truck2.load_trucks_and_get_best_route()
         #truck3.load_trucks_and_get_best_route()
@@ -86,6 +86,9 @@ def ui():
 
         # [1] Package status #1
         if status_1 == "1":
+            # the graph call might need to be elsewhere
+            truck2.route = Graph.greedy_path_algorithm(truck2.route)
+            truck3.route = Graph.greedy_path_algorithm(truck3.route)
             Utils.deliver_packages(truck1)
             Utils.deliver_packages(truck2)
             Utils.deliver_packages(truck3)
@@ -105,7 +108,7 @@ def ui():
             # [1] YES, fix the package
             if fix_pkg == "1":
                 print("Fixing package #9 address to 410 S State St., Salt Lake City, UT 84111 ... ")
-                for package in truck2.truck_packages:
+                for package in truck1.truck_packages:
                     if package.ID == "9":
                         package.destination = "410 S State St"
                         package.city = "Salt Lake City"
@@ -113,8 +116,8 @@ def ui():
                         package.zip = "84111"
                         break  # stop looping once you've updated the package
 
-                truck2.route = Graph.greedy_path_algorithm(truck2.route)  # updates route with the best route
-                truck2.route.append("4001 South 700 East")  # bring the truck back to the hub
+                truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route
+                truck1.route.append("4001 South 700 East")  # bring the truck back to the hub
                 print("You fixed the address!")
 
                 # Next: See package status 2
@@ -192,7 +195,7 @@ def ui():
             user_search_string = input("Enter the ID of the package you would like to search for: ")
             try:
                 user_search_int = int(user_search_string)
-                print_search_result(user_search_int)
+                print_search_result(packageHashTable, user_search_int)
             except ValueError:
                 print("You did not enter an integer for the ID")
             try_again = input("Enter 1 to search again. Enter anything else to exit: ")

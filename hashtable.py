@@ -1,6 +1,5 @@
 import csv
 from typing import List
-
 from Packages import Package
 
 
@@ -15,10 +14,20 @@ class HashTable:
         for i in range(table_size):
             self.table.append([])
 
+    def addnewelement(self):
+        self.table_size += 1
+        self.table.append([])
+
     def insert(self, key, package):
+        if self.table_size < package.ID:
+            self.addnewelement()
         package.ID = int(package.ID)
-        bucket = key % len(self.table)
+        bucket = key % (len(self.table)+1)-1
         self.table[bucket].append(package)
+        if bucket >= len(self.hash_table):
+            self.hash_table.append(package)
+        else:
+            self.hash_table[bucket] = package
         if package.deadline != "9:05":
             package.status = "AT_HUB"  # Adds delivery status for all packages that are not late to the hub
         if package.deadline == "9:05":
@@ -31,10 +40,10 @@ class HashTable:
                 all_values.append(package)
         return all_values
     def search(self, key):
-            hash_index = key % self.table_size
+            hash_index = key % (self.table_size+1)-1
             while self.hash_table[hash_index] is not None:
-                if self.hash_table[hash_index][0].ID == key:  # access the ID attribute of the Package object
-                    return self.hash_table[hash_index][1]
+                if self.hash_table[hash_index].ID == key:  # access the ID attribute of the Package object
+                    return self.hash_table[hash_index]
                 hash_index = (hash_index + 1) % self.table_size
             return None
 
@@ -55,15 +64,14 @@ def get_packages(filename):
             for row in csv_reader:
                 print(row)
                 package = Package(*row, "Loaded")
-                hash_pkgs.insert(package)
-     #package_hashtable = get_packages("Data/package_file.csv")
-     return hash_pkgs
+                hash_pkgs.insert(package.ID, package)
+            return hash_pkgs
+
 
 
 
 def print_search_result(package_hashtable, id):
-    result = package_hashtable.search(id)
-    print(result)
+    print(package_hashtable.search(id))
 
 
 

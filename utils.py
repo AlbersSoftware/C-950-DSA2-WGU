@@ -1,7 +1,9 @@
+import csv
 from Packages import Package
 from Graph import graph
 from Graph import greedy_path_algorithm
 from datetime import timedelta, datetime
+import hashtable
 import Truck
 
 class Utils:
@@ -85,6 +87,30 @@ class Utils:
         trucks.start_time = trucks.finish_time
         print("Deliver Truck " + str(trucks.truck_id) + " Delivery:", *trucks.truck_packages,
                   sep="\n")  # prints using new lines instead of a giant line
+
+    @staticmethod
+    def loadPackageData(file):
+        print("Loading package data...")
+        packageHashTable = hashtable.HashTable()
+        with open(file) as packages:
+            packageData = csv.reader(packages, delimiter=',')
+            #next(packageData)
+            for row in packageData:
+                package = list(row)
+                packageID = int(package[0])
+                packageDestination = package[1]
+                packageCity = package[2]
+                packageState = package[3]
+                packageZip = package[4]
+                packageDeadline = package[5]
+                packageWeight = package[6]
+                packageNotes = package[7]
+                packageStatus = "Loaded"
+
+                p = Package(packageID, packageDestination, packageCity, packageState,
+                            packageZip, packageDeadline, packageWeight, packageNotes, packageStatus)
+                packageHashTable.insert(packageID, p)
+            return packageHashTable
 
 '''
                 # Truck 2 Delivery
