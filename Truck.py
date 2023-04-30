@@ -33,18 +33,18 @@ class Truck:
         graph.put_packages_in_delivery_dict(package_list)
     def load_packages(self, package_list):
         for package in package_list:
-            if self.truck_id == 1 and (package.ID == 19 or package.ID == 15 or package.ID == 13 or package.ID == 14 or package.ID == 16 or package.ID == 20 or package.ID == 11 or package.ID == 12 or package.ID == 5 or package.ID == 7 or package.ID == 8 or package.ID == 10):
+            if self.truck_id == 1 and (package.ID == 19 or package.ID == 15 or package.ID == 13 or package.ID == 14 or package.ID == 16 or package.ID == 20 or package.ID == 11 or package.ID == 12 or package.ID == 5 or package.ID == 7 or package.ID == 8 or package.ID == 10 or package.ID == 31 or package.ID == 34):
                 self.insert(package)
                 package.load_to_truck(self.truck_id)
                 # After loading packages onto the truck, put them in the delivery dictionary in the graph instance
                 print(f"Package {package.ID} loaded onto Truck {self.truck_id}")
-            elif self.truck_id == 2 and (package.ID == 1 or package.ID == 3 or package.ID == 18 or package.ID == 36 or package.ID == 38 or package.ID == 38 or package.ID == 17 or package.ID == 21 or package.ID == 22 or package.ID == 23 or package.ID == 24 or package.ID == 26 or package.ID == 27 or package.ID == 28 or package.ID == 29 or package.ID == 30):
+            elif self.truck_id == 2 and (package.ID == 1 or package.ID == 3 or package.ID == 18 or package.ID == 36 or package.ID == 2 or package.ID == 38 or package.ID == 17 or package.ID == 21 or package.ID == 22 or package.ID == 23 or package.ID == 24 or package.ID == 26 or package.ID == 27 or package.ID == 28 or package.ID == 29 or package.ID == 30):
                 self.insert(package)
                 package.load_to_truck(self.truck_id)
                 # After loading packages onto the truck, put them in the delivery dictionary in the graph instance
                 #graph.put_packages_in_delivery_dict(package_list)
                 print(f"Package {package.ID} loaded onto Truck {self.truck_id}")
-            elif self.truck_id == 3 and (package.ID == 25 or package.ID == 6 or package.ID == 28 or package.ID == 32 or package.ID == 31 or package.ID == 33 or package.ID == 34 or package.ID == 35 or package.ID == 37 or package.ID == 39 or package.ID == 40 or package.ID == 9):
+            elif self.truck_id == 3 and (package.ID == 6 or package.ID == 25  or package.ID == 28 or package.ID == 32 or package.ID == 33 or package.ID == 35 or package.ID == 37 or package.ID == 39 or package.ID == 40 or package.ID == 9):
                 self.insert(package)
                 package.load_to_truck(self.truck_id)
                 # After loading packages onto the truck, put them in the delivery dictionary in the graph instance

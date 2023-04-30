@@ -91,6 +91,7 @@ def ui():
             # the graph call might need to be elsewhere
             truck1.route = Graph.greedy_path_algorithm(truck1.route)
             truck2.route = Graph.greedy_path_algorithm(truck2.route)
+            #truck3.route = Graph.greedy_path_algorithm(truck3.route)
 
             Utils.deliver_packages(truck1)
             Utils.deliver_packages(truck2)
@@ -118,7 +119,7 @@ def ui():
                         package.state = "UT"
                         package.zip = "84111"
                         break  # stop looping once you've updated the package
-                truck3.route = Graph.greedy_path_algorithm(truck3.route)
+               # truck3.route = Graph.greedy_path_algorithm(truck3.route)
                 Utils.deliver_packages(truck3)
                 Utils.see_package_status(truck3, 9, 23, 0,8,0,0)
                 #truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route
