@@ -18,7 +18,7 @@ def ui():
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
         if package:
-            print("Package ID: {}, Destination: {}".format(package.ID, package.destination))
+            print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination, package.status))
 
             #call for get packages and to search packages
             #package_hashtable = get_packages("Data/package_file.csv")
@@ -67,7 +67,9 @@ def ui():
         # load the packages onto the trucks
         truck1.putPackageInDeliveryDict(all_packages)
         truck1.load_packages(all_packages)
+        truck2.putPackageInDeliveryDict(all_packages)
         truck2.load_packages(all_packages)
+        truck3.putPackageInDeliveryDict(all_packages)
         truck3.load_packages(all_packages)
 
         #truck1.load_trucks_and_get_best_route()
@@ -87,14 +89,15 @@ def ui():
         # [1] Package status #1
         if status_1 == "1":
             # the graph call might need to be elsewhere
+            truck1.route = Graph.greedy_path_algorithm(truck1.route)
             truck2.route = Graph.greedy_path_algorithm(truck2.route)
-            truck3.route = Graph.greedy_path_algorithm(truck3.route)
+
             Utils.deliver_packages(truck1)
             Utils.deliver_packages(truck2)
-            Utils.deliver_packages(truck3)
-            Utils.see_package_status(truck1, 9, 23, 0)
-            Utils.see_package_status(truck2, 9, 23, 0)
-            Utils.see_package_status(truck3, 9, 23, 0)
+
+            Utils.see_package_status(truck1, 9, 25, 0,8, 0,0)
+            Utils.see_package_status(truck2, 9, 25, 0,8,0,0)
+            Utils.see_package_status(truck3, 9, 25, 0,8,0,0)
 
             # Next: Fix the package #9 address
             print("\nURGENT! IT IS 10:20AM. YOU NEED TO FIX THE ADDRESS FOR PACKAGE #9")
@@ -108,16 +111,18 @@ def ui():
             # [1] YES, fix the package
             if fix_pkg == "1":
                 print("Fixing package #9 address to 410 S State St., Salt Lake City, UT 84111 ... ")
-                for package in truck1.truck_packages:
+                for package in truck3.truck_packages:
                     if package.ID == "9":
                         package.destination = "410 S State St"
                         package.city = "Salt Lake City"
                         package.state = "UT"
                         package.zip = "84111"
                         break  # stop looping once you've updated the package
-
-                truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route
-                truck1.route.append("4001 South 700 East")  # bring the truck back to the hub
+                truck3.route = Graph.greedy_path_algorithm(truck3.route)
+                Utils.deliver_packages(truck3)
+                Utils.see_package_status(truck3, 9, 23, 0,8,0,0)
+                #truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route
+                #truck1.route.append("4001 South 700 East")  # bring the truck back to the hubs
                 print("You fixed the address!")
 
                 # Next: See package status 2
@@ -131,12 +136,9 @@ def ui():
                     SystemExit
 
                 if status_2 == "1":
-                    Utils.deliver_packages(truck1)
-                    Utils.deliver_packages(truck2)
-                    Utils.deliver_packages(truck3)
-                    Utils.see_package_status(truck1, 10, 23, 0)
-                    Utils.see_package_status(truck2, 10, 23, 0)
-                    Utils.see_package_status(truck3, 10, 23, 0)
+                    Utils.see_package_status(truck1, 10, 23, 0,9,25,1)
+                    Utils.see_package_status(truck2, 10, 23, 0,9,25,1)
+                    Utils.see_package_status(truck3, 10, 23, 0,9,25,1)
 
                     # Next: See package status 3
                     status_3 = input("\nNow, you can view package status #3\n"
@@ -150,12 +152,9 @@ def ui():
 
                     # [1] See package status 3
                     if status_3 == "1":
-                        Utils.deliver_packages(truck1)
-                        Utils.deliver_packages(truck2)
-                        Utils.deliver_packages(truck3)
-                        Utils.see_package_status(truck1, 13, 12, 0)
-                        Utils.see_package_status(truck2, 13, 12, 0)
-                        Utils.see_package_status(truck3, 13, 12, 0)
+                        Utils.see_package_status(truck1, 13, 12, 0,10,23,1)
+                        Utils.see_package_status(truck2, 13, 12, 0,10,23,1)
+                        Utils.see_package_status(truck3, 13, 12, 0,10,23,1)
                         #Utils.see_package_status(13, 12, 0)
 
                         # Last, the user can view the final results
@@ -170,12 +169,9 @@ def ui():
 
                         # [1] See final results and exit the program!
                         if final == "1":
-                            Utils.deliver_packages(truck1)
-                            Utils.deliver_packages(truck2)
-                            Utils.deliver_packages(truck3)
-                            Utils.see_package_status(truck1, 13, 12, 0)
-                            Utils.see_package_status(truck2, 13, 12, 0)
-                            Utils.see_package_status(truck3, 13, 12, 0)
+                            Utils.see_package_status(truck1, 13, 12, 0,8,0,0)
+                            Utils.see_package_status(truck2, 13, 12, 0,8,0,0)
+                            Utils.see_package_status(truck3, 13, 12, 0,8,0,0)
                             t1_miles = truck1.miles_traveled()
                             t2_miles = truck2.miles_traveled()
                             t3_miles = truck3.miles_traveled()
