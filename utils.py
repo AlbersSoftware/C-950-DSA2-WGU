@@ -96,6 +96,8 @@ class Utils:
                 trucks.current_time = datetime(2023, 1, 1, delivered_time.hour, delivered_time.minute,
                                                delivered_time.second)
                 #updated_delivery_status =
+                if (trucks.truck_packages.notes != 'Wrong address listed'):
+                    break
                 Utils.updatePackageStatus(trucks.truck_packages,trucks.route[i + 1],f"DELIVERED AT {str(delivered_time)}")
                 '''for package in trucks.truck_packages:
                     if trucks.route[i] == package.destination and package.status.startswith("On Truck"):
@@ -108,6 +110,8 @@ class Utils:
         trucks.start_time = trucks.finish_time
         #print("Deliver Truck " + str(trucks.truck_id) + " Delivery:", *trucks.truck_packages,
                   #sep="\n")  # prints using new lines instead of a giant line
+
+
 
     @staticmethod
     def loadPackageData(file):

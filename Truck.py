@@ -13,15 +13,18 @@ class Truck:
 
 
 # Constructor to initialize packages on the truck, route, delivery start time, and mileage
-    def __init__(self, truck_id, capacity, startTime):
+    def __init__(self, truck_id, capacity, startTime): # , type, value
         self.truck_packages = []
         self.route = ["4001 South 700 East"]
+        self.completedroute = []
         self.start_time = startTime
         self.current_time = None
         self.finish_time = None
         self.speed = 0.3  # 18mph is equivalent to 0.3 miles / minute
         self.truck_id = truck_id
         self.capacity = capacity
+        #self.prioritytype = type
+        #self.priorityvalue = value
 
 
     # Put package on truck
@@ -44,12 +47,13 @@ class Truck:
                 # After loading packages onto the truck, put them in the delivery dictionary in the graph instance
                 #graph.put_packages_in_delivery_dict(package_list)
                 print(f"Package {package.ID} loaded onto Truck {self.truck_id}")
-            elif self.truck_id == 3 and (package.ID == 6 or package.ID == 25  or package.ID == 28 or package.ID == 32 or package.ID == 33 or package.ID == 35 or package.ID == 37 or package.ID == 39 or package.ID == 40 or package.ID == 9):
+            elif self.truck_id == 3 and (package.ID == 6 or package.ID == 25 or package.ID == 28 or package.ID == 32 or package.ID == 33 or package.ID == 35 or package.ID == 37 or package.ID == 39 or package.ID == 40 or package.ID == 9):
                 self.insert(package)
                 package.load_to_truck(self.truck_id)
                 # After loading packages onto the truck, put them in the delivery dictionary in the graph instance
                 #graph.put_packages_in_delivery_dict(package_list)
                 print(f"Package {package.ID} loaded onto Truck {self.truck_id}")
+                #elif self.truck_id == 3 and self.truck3_priority and (package.ID == 6)
 
 
 

@@ -91,8 +91,14 @@ def ui():
             # the graph call might need to be elsewhere
             truck1.route = Graph.greedy_path_algorithm(truck1.route)
             truck2.route = Graph.greedy_path_algorithm(truck2.route)
-            #truck3.route = Graph.greedy_path_algorithm(truck3.route)
-
+            # truck3_priority = (package.ID == 6 and package.ID == 25)
+            # truck3_last = (package.ID == 9)
+            #truck3_priority.route = Graph.greedy_path_algorithm(truck3_priority.route)
+            # if len(self.truck3_priority.route) > 0:
+            # trucks.truck_packages.next
+            # if truck3_last in deliver_packages(truck3):
+            # truck3.route.package.packageid.append
+            # deliver_packages()
             Utils.deliver_packages(truck1)
             Utils.deliver_packages(truck2)
 
@@ -113,13 +119,13 @@ def ui():
             if fix_pkg == "1":
                 print("Fixing package #9 address to 410 S State St., Salt Lake City, UT 84111 ... ")
                 for package in truck3.truck_packages:
-                    if package.ID == "9":
+                    if package.ID == 9:
                         package.destination = "410 S State St"
                         package.city = "Salt Lake City"
                         package.state = "UT"
                         package.zip = "84111"
                         break  # stop looping once you've updated the package
-               # truck3.route = Graph.greedy_path_algorithm(truck3.route)
+                truck3.route = Graph.greedy_path_algorithm(truck3.route)
                 Utils.deliver_packages(truck3)
                 Utils.see_package_status(truck3, 9, 23, 0,8,0,0)
                 #truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route

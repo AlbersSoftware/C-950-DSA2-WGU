@@ -6,7 +6,7 @@ from typing import List
 
 
 class Package:
-    def __init__(self, ID, destination, city, state, Zip, deadline, weight, notes, status="Loaded"):
+    def __init__(self, ID, destination, city, state, Zip, deadline, weight, notes, status): #, prioritytype ,values):
         super().__init__()
         self.ID = ID
         self.destination = destination
@@ -16,7 +16,9 @@ class Package:
         self.deadline = deadline
         self.weight = weight
         self.notes = notes
-        self.status = status
+        self.status = "Loaded"
+        #self.prioritytype = prioritytype
+        #self.priorityvalue = values
 
         # Add delivery time
 
