@@ -73,10 +73,30 @@ class Utils:
                 inlinePackage.status = status
             elif route == inlinePackage.destination and inlinePackage.status == "DELAYED":
                 continue
+
     @staticmethod
-    def deliver_packages(trucks):
+    def isreadytodeliver(truckspackage, hour, min, sec, startHr, startMin,startSec, timeForDelivery):
+        for inlinePackage in truckspackage:
+            if (inlinePackage.notes != 'Wrong address listed'):
+                timeForEndStatus = datetime(2023, 1, 1, hour, min, sec, tzinfo=None)
+                timeForStartStatus = datetime(2023, 1, 1, startHr, startMin, startSec, tzinfo=None)
+                if (str( timeForDelivery - timeForEndStatus)).startswith("-1 day") and (str( timeForStartStatus - timeForDelivery)).startswith("-1 day"):
+                    return True
+                else:
+                    return False
+        return False
+
+    @staticmethod
+    def clearDeliveredRoute(trucks):
+        for completedroute in trucks.completedroute:
+            try:
+                trucks.route.remove(completedroute)
+            except:
+                i =0
+
+    @staticmethod
+    def deliver_packages(trucks,hour, min, sec, startHr, startMin,startSec):
         miles_between = graph.edge_weights
-        total_miles_driven = 0.0
         truck_start = trucks.start_time
         trucks.start_time = truck_start
         trucks.current_time = truck_start
@@ -96,17 +116,17 @@ class Utils:
                 trucks.current_time = datetime(2023, 1, 1, delivered_time.hour, delivered_time.minute,
                                                delivered_time.second)
                 #updated_delivery_status =
-                if (trucks.truck_packages.notes != 'Wrong address listed'):
+                if (Utils.isreadytodeliver(trucks.truck_packages, hour, min, sec, startHr, startMin,startSec,trucks.current_time)):
+                    Utils.updatePackageStatus(trucks.truck_packages,trucks.route[i + 1],f"DELIVERED AT {str(delivered_time)}")
+                    trucks.completedroute.append(trucks.route[i])
+                else:
                     break
-                Utils.updatePackageStatus(trucks.truck_packages,trucks.route[i + 1],f"DELIVERED AT {str(delivered_time)}")
                 '''for package in trucks.truck_packages:
                     if trucks.route[i] == package.destination and package.status.startswith("On Truck"):
                         package.status = updated_delivery_status
                     elif trucks.route[i + 1] == package.destination and package.status == "DELAYED":
                         continue'''
                 trucks.finish_time = trucks.current_time
-                # update total miles driven
-                #total_miles_driven += sum(float(miles_between[trucks.route[i], trucks.route[i + 1]]))
         trucks.start_time = trucks.finish_time
         #print("Deliver Truck " + str(trucks.truck_id) + " Delivery:", *trucks.truck_packages,
                   #sep="\n")  # prints using new lines instead of a giant line

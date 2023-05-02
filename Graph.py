@@ -89,8 +89,8 @@ def get_graph(filename):
 graph = get_graph("Data/distance.csv")
 
 
-def greedy_path_algorithm(route):
-    start = "4001 South 700 East"  # all trucks start their deliveries at the hub
+def greedy_path_algorithm(route, start):
+    # all trucks start their deliveries at the hub
     graph_edge_weights = graph.edge_weights  # get the edge weights from the graph
 
     if ('4001 South 700 East', '4001 South 700 East') in graph_edge_weights.keys():
