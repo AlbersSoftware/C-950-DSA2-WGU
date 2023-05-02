@@ -130,15 +130,15 @@ def ui():
             # [1] YES, fix the package
             if fix_pkg == "1":
                 print("Fixing package #9 address to 410 S State St., Salt Lake City, UT 84111 ... ")
-                for package in truck1.truck_packages:
+                for package in truck3.truck_packages:
                     if package.ID == 9:
-                        truck1.route.remove(package.destination)
+                        truck3.route.remove(package.destination)
                         package.destination = "410 S State St"
                         package.city = "Salt Lake City"
                         package.state = "UT"
                         package.zip = "84111"
                         package.notes = "Fixed the address"
-                        truck1.route.append(package.destination)
+                        truck3.route.append(package.destination)
                         break  # stop looping once you've updated the package
 
                 truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
