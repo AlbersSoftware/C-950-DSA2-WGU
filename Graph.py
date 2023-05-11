@@ -74,14 +74,7 @@ def get_graph(filename):
             j += 1
         i += 1
 
-    '''i = 0
-    for row in data:
-        graph_distances.add_vertex(row[0], addresses[i])  # Vertex is associated with the street address
-        i += 1
-    for row in data:
-        for i in range(3, len(row)):  # Starts at 3 because indices 0-2 are name, street, and zip, which are not needed
-         if row[i] != '':
-           graph_distances.add_edge(row[1], data[i-3][1], float(row[i]))  # data[i-3][1] gets each connected street vertex'''
+    
     return graph_distances
 
 

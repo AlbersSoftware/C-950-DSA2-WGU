@@ -25,14 +25,17 @@ def ui():
             #print_search_result(package_hashtable, "1")
 
     truck1 = Truck(truck_id=1, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
-    truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
-    truck3 = Truck(truck_id=3, capacity=10, startTime=datetime(2023, 1, 1, 9, 5, 0))
+    truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
+    truck3 = Truck(truck_id=3, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
 
     # create a list of all packages
     all_packages = packageHashTable.get_all_values()
 
+    #truck3.start_time = truck2.finish_time
 
 
+    #while truck1.finish_time is None:
+        #truck3.start_time = truck1.finish_time
 
 
     # print the packages on each truck
@@ -66,15 +69,17 @@ def ui():
         print("Packages were inserted into hash table and packages were loaded onto trucks.")
         # load the packages onto the trucks
         truck1.putPackageInDeliveryDict(all_packages)
+        truck1.load_packages(all_packages, -1)
+        truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
+        Utils.deliver_packages(truck1, 9, 25, 0, 8, 0, 0)
+        Utils.clearDeliveredRoute(truck1)
         truck1.load_packages(all_packages,1)
         truck2.putPackageInDeliveryDict(all_packages)
         truck2.load_packages(all_packages,1)
         truck3.putPackageInDeliveryDict(all_packages)
         truck3.load_packages(all_packages,1)
 
-        #truck1.load_trucks_and_get_best_route()
-        #truck2.load_trucks_and_get_best_route()
-        #truck3.load_trucks_and_get_best_route()
+
 
 
         status_1 = input("\nEnter 1 to go package status #1 \n"
@@ -89,27 +94,25 @@ def ui():
         # [1] Package status #1
         if status_1 == "1":
             # the graph call might need to be elsewhere
-            truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
+            truck1.route = Graph.greedy_path_algorithm(truck1.route, "4580 S 2300 E")
             truck2.route = Graph.greedy_path_algorithm(truck2.route, "4001 South 700 East")
             truck3.route = Graph.greedy_path_algorithm(truck3.route, "4001 South 700 East")
-            # truck3_priority = (package.ID == 6 and package.ID == 25)
-            # truck3_last = (package.ID == 9)
-            #truck3_priority.route = Graph.greedy_path_algorithm(truck3_priority.route)
-            # if len(self.truck3_priority.route) > 0:
-            # trucks.truck_packages.next
-            # if truck3_last in deliver_packages(truck3):
-            # truck3.route.package.packageid.append
-            # deliver_packages()
+
             Utils.deliver_packages(truck1,9, 25, 0,8, 0,0)
             Utils.clearDeliveredRoute(truck1)
             truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
-            Utils.deliver_packages(truck2, 9, 25, 0,8, 0,0)
+            Utils.deliver_packages(truck2, 9, 25, 0,9, 5,0)
             Utils.clearDeliveredRoute(truck2)
             truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
 
-            Utils.deliver_packages(truck3, 9, 25, 0,9, 5,0)
-            Utils.clearDeliveredRoute(truck3)
-            truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+            if truck1.isInHub:
+                truck1_current_time = truck1.finish_time
+                truck3.start_time = datetime(2023, 1, 1, truck1_current_time.hour, truck1_current_time.minute,
+                                             truck1_current_time.second)
+                Utils.deliver_packages(truck3, 9, 25, 0,9, 5,0)
+                Utils.clearDeliveredRoute(truck3)
+                truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+
 
             Utils.see_package_status(truck1, 9, 25, 0,8, 0,0)
             Utils.see_package_status(truck2, 9, 25, 0,8,0,0)
@@ -144,21 +147,20 @@ def ui():
                 truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
                 truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
                 truck3.route = Graph.greedy_path_algorithm(truck3.route,truck3.route[0])
-                Utils.deliver_packages(truck1, 9, 25, 0, 8, 0, 0)
+                Utils.deliver_packages(truck1, 10, 30, 0, 8, 0,0)
                 Utils.clearDeliveredRoute(truck1)
                 truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
-                Utils.deliver_packages(truck2, 9, 25, 0, 8, 0, 0)
+                Utils.deliver_packages(truck2, 10, 30, 0, 9, 5, 0)
                 Utils.clearDeliveredRoute(truck2)
                 truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
 
-                Utils.deliver_packages(truck3, 9, 25, 0, 9, 5, 0)
-                Utils.clearDeliveredRoute(truck3)
-                truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
-                #truck3.start_time =
-                '''Utils.deliver_packages(truck3)
-                Utils.see_package_status(truck3, 9, 23, 0,8,0,0)
-                #truck1.route = Graph.greedy_path_algorithm(truck1.route)  # updates route with the best route
-                #truck1.route.append("4001 South 700 East")  # bring the truck back to the hubs'''
+                if truck1.isInHub:
+                    truck3.start_time = truck1.finish_time
+                    Utils.deliver_packages(truck3, 10, 30, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                           truck3.start_time.second)
+                    Utils.clearDeliveredRoute(truck3)
+                    truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+
                 print("You fixed the address!")
 
 
@@ -173,14 +175,18 @@ def ui():
                     SystemExit
 
                 if status_2 == "1":
-                    Utils.deliver_packages(truck1, 10, 23, 0,9,25,1)
-                    Utils.clearDeliveredRoute(truck1)
-                    truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
-                    Utils.deliver_packages(truck2, 10, 23, 0,9,25,1)
-                    Utils.clearDeliveredRoute(truck2)
-                    truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+                    if truck1.isInHub == False:
+                        Utils.deliver_packages(truck1, 13, 12, 0,8, 0,0)
+                        Utils.clearDeliveredRoute(truck1)
+                        truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
 
-                    Utils.deliver_packages(truck3, 10, 23, 0,9,25,1)
+                    if truck2.isInHub == False:
+                        Utils.deliver_packages(truck2, 13, 12, 0,9,5,1)
+                        Utils.clearDeliveredRoute(truck2)
+                        truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+
+                    Utils.deliver_packages(truck3, 13, 12, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                           truck3.start_time.second)
                     Utils.clearDeliveredRoute(truck3)
                     if len(truck3.route) > 0:
                         truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
@@ -202,19 +208,20 @@ def ui():
                     # [1] See package status 3
                     if status_3 == "1":
                         if len(truck1.route) > 0:
-                            Utils.deliver_packages(truck1, 13, 12, 0,10,23,1)
+                            Utils.deliver_packages(truck1, 17, 25, 0,8, 0,0)
                             Utils.clearDeliveredRoute(truck1)
                             if len(truck1.route) > 0:
                                 truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
 
                         if len(truck2.route) > 0:
-                            Utils.deliver_packages(truck2, 13, 12, 0,10,23,1)
+                            Utils.deliver_packages(truck2, 17, 25, 0,9,5,0)
                             Utils.clearDeliveredRoute(truck2)
                             if len(truck2.route) > 0:
                                 truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
 
                         if len(truck3.route) > 0:
-                            Utils.deliver_packages(truck3, 13, 12, 0,10,23,1)
+                            Utils.deliver_packages(truck3, 17, 25, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                           truck3.start_time.second)
                             Utils.clearDeliveredRoute(truck3)
                             if len(truck3.route) > 0:
                                 truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
@@ -249,7 +256,8 @@ def ui():
                                     truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
 
                             if len(truck3.route) > 0:
-                                Utils.deliver_packages(truck3, 17, 25, 0, 9, 5, 0)
+                                Utils.deliver_packages(truck3, 17, 25, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                           truck3.start_time.second)
                                 Utils.clearDeliveredRoute(truck3)
                                 if len(truck3.route) > 0:
                                     truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])

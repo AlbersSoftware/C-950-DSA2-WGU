@@ -21,36 +21,7 @@ class Utils:
 
     @staticmethod
     def see_package_status(trucks,hour, min, sec, startHr, startMin,startSec):
-        '''miles_between = graph.edge_weights
-        print(hour)
-        stop_time = datetime(2023, 1, 1, hour, min, sec)
 
-        # Truck 1 Delivery
-        trucks.start_time = datetime(2023, 1, 1, 1, 1, 1)
-        trucks.current_time = trucks.start_time
-        Utils.out_for_delivery(trucks.truck_packages)
-        if ('600 E 900 South', '3595 Main St') in miles_between:
-            print("dkjfkd")
-        else:
-            print("No distance data available for this address pair.")
-
-        for i in range(0, len(trucks.route) - 1):
-            if trucks.route[i] == trucks.route[i + 1]:
-                continue  # skip this iteration if the same stop is repeated
-            if miles_between[trucks.route[i], trucks.route[i + 1]] != '':
-                distance = miles_between[trucks.route[i], trucks.route[i + 1]]
-                speed = trucks.speed
-                minutes_decimal = distance / speed
-                seconds_to_add = round(minutes_decimal * 60, 2)
-                delivered_time = Utils.add_seconds(trucks.current_time, seconds_to_add)
-                if delivered_time < stop_time.time():
-                    trucks.current_time = datetime(2023, 1, 1, delivered_time.hour, delivered_time.minute,
-                                               delivered_time.second)
-                    updated_delivery_status = "DELIVERED AT", str(delivered_time)
-                    for package in trucks.truck_packages:
-                        if trucks.route[i + 1] == package.destination:
-                            package.status = updated_delivery_status
-                trucks.finish_time = trucks.current_time'''
         print("Delivered Package on Truck " + str(trucks.truck_id))  # prints using new lines instead of a giant line
         for pkg in trucks.truck_packages:
             if (pkg.status.startswith("DELIVERED AT")):
@@ -87,6 +58,14 @@ class Utils:
         return False
 
     @staticmethod
+    def isallpackagedelivered(truckspackage):
+        isDelivered = 0
+        for inlinePackage in truckspackage:
+            if inlinePackage.status.startswith("DELIVERED AT"):
+                isDelivered += 1
+        return isDelivered
+
+    @staticmethod
     def clearDeliveredRoute(trucks):
         for completedroute in trucks.completedroute:
             try:
@@ -100,12 +79,9 @@ class Utils:
         truck_start = trucks.start_time
         trucks.start_time = truck_start
         trucks.current_time = truck_start
-
         for i in range(0, len(trucks.route)-1):
             if i < len(trucks.truck_packages):
-                '''if i == 0 and trucks.truck_packages[i].status.startswith("On Truck"):
-                    updated_delivery_status = f"DELIVERED AT {str(trucks.start_time)}"
-                    trucks.truck_packages[i].status = updated_delivery_status'''
+
                 distance = miles_between[trucks.route[i], trucks.route[i + 1]]
                 if distance ==0.0:
                     distance = miles_between[trucks.route[i+1], trucks.route[i]]
@@ -121,13 +97,32 @@ class Utils:
                     trucks.completedroute.append(trucks.route[i])
                 else:
                     break
-                '''for package in trucks.truck_packages:
-                    if trucks.route[i] == package.destination and package.status.startswith("On Truck"):
-                        package.status = updated_delivery_status
-                    elif trucks.route[i + 1] == package.destination and package.status == "DELAYED":
-                        continue'''
                 trucks.finish_time = trucks.current_time
-        trucks.start_time = trucks.finish_time
+        if trucks.finish_time != None:
+            trucks.start_time = trucks.finish_time
+        isDelivered = Utils.isallpackagedelivered(trucks.truck_packages)
+        if trucks.isInHub == False and isDelivered == len(trucks.truck_packages):
+            print(trucks.isInHub)
+            trucks.isInHub = True
+            print(trucks.truck_id)
+            print(trucks.route)
+            if trucks.route[0] != trucks.hub_location:
+                distance = miles_between[trucks.route[0], trucks.hub_location]
+            else:
+                distance = miles_between[trucks.route[len(trucks.route)-1], trucks.hub_location]
+            if distance == 0.0:
+                print("No route")
+            speed = trucks.speed
+            minutes_decimal = distance / speed
+            seconds_to_add = round(minutes_decimal * 60, 2)
+            delivered_time = Utils.add_seconds(trucks.current_time, seconds_to_add)
+            trucks.current_time = datetime(2023, 1, 1, delivered_time.hour, delivered_time.minute,
+                                           delivered_time.second)
+            trucks.completedroute.append(trucks.route[0])
+            trucks.finish_time = trucks.current_time
+            print("PP Success")
+        else:
+            trucks.isInHub = False
         #print("Deliver Truck " + str(trucks.truck_id) + " Delivery:", *trucks.truck_packages,
                   #sep="\n")  # prints using new lines instead of a giant line
 
@@ -157,118 +152,7 @@ class Utils:
                 packageHashTable.insert(packageID, p)
             return packageHashTable
 
-'''
-                # Truck 2 Delivery
-                truck2_start = datetime(2020, 1, 1, 9, 5, 0)
-                truck2.start_time = truck2_start
-                truck2.current_time = truck2_start
-                for i in range(0, len(truck2.route) - 1):
-                    if truck2.route[i] == truck2.route[i + 1]:
-                        continue
-                    distance = miles_between[truck2.route[i], truck2.route[i + 1]]
-                    speed = truck2.speed
-                    minutes_decimal = distance / speed
-                    seconds_to_add = round(minutes_decimal * 60, 2)
-                    delivered_time = add_seconds(truck2.current_time, seconds_to_add)
-                    truck2.current_time = datetime(2020, 1, 1, delivered_time.hour, delivered_time.minute,
-                                                   delivered_time.second)
-                    updated_delivery_status = "DELIVERED AT", str(delivered_time)
-                    for package in truck2.truck_packages:
-                        if truck2.route[i + 1] == package.destination and package.status == "AT HUB":
-                            package.status = updated_delivery_status
-                        elif truck2.route[i + 1] == package.destination and package.status == "DELAYED":
-                            continue
-                    truck2.finish_time = truck2.current_time
-                    print("Truck 2 Delivery:", *truck2.truck_packages,
-                          sep="\n")  # prints using new lines instead of a giant line
-                  
-                # Truck 3 Delivery
-                truck3_start = truck1.finish_time
-                truck3.start_time = truck3_start
-                truck3.current_time = truck3_start
-                for i in range(0, len(truck3.route) - 1):
-                    if truck3.route[i] == truck3.route[i + 1]:
-                        continue
-                    distance = miles_between[truck3.route[i], truck3.route[i + 1]]
-                    speed = truck3.speed
-                    minutes_decimal = distance / speed
-                    seconds_to_add = round(minutes_decimal * 60, 2)
-                    delivered_time = add_seconds(truck3.current_time, seconds_to_add)
-                    truck3.current_time = datetime(2020, 1, 1, delivered_time.hour, delivered_time.minute,
-                                                   delivered_time.second)
-                    updated_delivery_status = "DELIVERED AT", str(delivered_time)
-                    for package in truck3.truck_packages:
-                        if truck3.route[i + 1] == package.destination:
-                            package.status = updated_delivery_status
-                    truck3.finish_time = truck3.current_time
-                    print("Truck 3 Delivery:", *truck3.truck_packages,
-                          sep="\n")  # prints using new lines instead of a giant line
-                    ''''''
-                   
-                
 
-        ''
-# Truck 2 Delivery
-        truck2_start = datetime(2020, 1, 1, 9, 5, 0)
-        truck2.start_time = truck2_start
-        truck2.current_time = truck2_start
-        truck2.out_for_delivery()
-        for i in range(0, len(truck2.route) - 1):
-            if truck2.route[i] == truck2.route[i + 1]:
-                continue  # skip this iteration if the same stop is repeated
-            print(truck2.route[i], truck2.route[i + 1])
-            distance = miles_between[truck2.route[i], truck2.route[i + 1]]
-            speed = truck2.speed
-            minutes_decimal = distance / speed
-            seconds_to_add = round(minutes_decimal * 60, 2)
-            delivered_time = Utils.add_seconds(truck2.current_time, seconds_to_add)
-            if delivered_time < stop_time.time():
-                truck2.current_time = datetime(2020, 1, 1, delivered_time.hour, delivered_time.minute,
-                                               delivered_time.second)
-                updated_delivery_status = "DELIVERED AT", str(delivered_time)
-                for package in truck2.truck_packages:
-                    if truck2.route[i + 1] == package.destination:
-                        package.status = updated_delivery_status
-            truck2.finish_time = truck2.current_time
-            print("Truck 2 Delivery:", *truck2.truck_packages, sep="\ n")  # prints using new lines instead of a giant line
-
-        # Truck 3 Delivery
-        truck3_start = truck1.finish_time
-        truck3.start_time = truck3_start
-        truck3.current_time = truck3_start
-        truck3.out_for_delivery()
-        for i in range(0, len(truck3.route) - 1):
-            if truck3.route[i] == truck3.route[i + 1]:
-                continue  # skip this iteration if the same stop is repeated
-            distance = miles_between[truck3.route[i], truck3.route[i + 1]]
-            speed = truck3.speed
-            minutes_decimal = distance / speed
-            seconds_to_add = round(minutes_decimal * 60, 2)
-            delivered_time = Utils.add_seconds(truck3.current_time, seconds_to_add)
-            if delivered_time < stop_time.time():
-                truck3.current_time = datetime(2020, 1, 1, delivered_time.hour, delivered_time.minute,
-                                               delivered_time.second)
-                updated_delivery_status = "DELIVERED AT", str(delivered_time)
-                for package in truck3.truck_packages:
-                    if truck3.route[i + 1] == package.destination:
-                        package.status = updated_delivery_status
-            truck3.finish_time = truck3.current_time
-            #print("Truck 3 Delivery:", *truck3.truck_packages, sep="\ n")
-           '''
-
-
-
-'''' # update total miles driven
-        print(miles_between)
-        total_miles_driven += sum(miles_between[truck2.route[i], truck2.route[i + 1]]
-        for i in range(len(truck2.route) - 1) if truck2.route[i])
-        
-                # print total miles driven
-                print("Total miles driven:", total_miles_driven)
-
-        # update total miles driven
-        total_miles_driven += sum(miles_between[truck3.route[i], truck3.route[i + 1]])
-         for i in range(len(truck3.route) - 1))'''
 
 
 def isfloat(distances):
