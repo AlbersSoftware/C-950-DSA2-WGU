@@ -26,7 +26,7 @@ def ui():
 
     truck1 = Truck(truck_id=1, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
     truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
-    truck3 = Truck(truck_id=3, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
+    truck3 = Truck(truck_id=3, capacity=16, startTime=datetime(2023, 1, 1, 10, 23, 0))
 
     # create a list of all packages
     all_packages = packageHashTable.get_all_values()
