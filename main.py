@@ -105,7 +105,7 @@ def ui():
             Utils.deliver_packages(truck1,9, 25, 0,8, 0,0)
             Utils.clearDeliveredRoute(truck1)
             truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
-            Utils.deliver_packages(truck2, 11, 25, 0,9, 5,0)
+            Utils.deliver_packages(truck2, 9, 25, 0,9, 5,0)
             Utils.clearDeliveredRoute(truck2)
             truck2.load_packages(all_packages, 1)
             truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
