@@ -51,7 +51,7 @@ class Truck:
             if priority == -1 or priority == -2:
                 continue
             if self.truck_id == 1 and (package.ID == 1 or package.ID == 13 or package.ID == 14
-                                        or package.ID == 20 or package.ID == 29
+                                        or package.ID == 20 or package.ID == 29 or package.ID == 19
                                           or package.ID == 31 or package.ID == 30  or package.ID == 40
                                         ):
                 self.insert(package)
@@ -68,7 +68,7 @@ class Truck:
                 #print(f"Package {package.ID} loaded onto Truck {self.truck_id}")
             elif self.truck_id == 3 and (package.ID == 2 or package.ID == 4 or package.ID == 12
                                          or package.ID == 7  or package.ID == 8 or package.ID == 10 or package.ID == 11
-                                         or package.ID == 17   or package.ID == 19   or package.ID == 21 or package.ID == 22
+                                         or package.ID == 17   or package.ID == 21 or package.ID == 22
                                          or package.ID == 24 or package.ID == 23 or package.ID == 33):
                 self.insert(package)
                 package.load_to_truck(self.truck_id)
