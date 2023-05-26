@@ -10,20 +10,19 @@ from hashtable import HashTable
 packageHashTable = Utils.loadPackageData('Data/package_file.csv')
 
 
-def ui():
+def userinterface():
     pass
 
 
-    print("Packages from package hash table:")
+    print("Packages from the hashtable:")
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
         if package:
             print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination, package.status))
 
             #call for get packages and to search packages
-            #package_hashtable = get_packages("Data/package_file.csv")
-            #print_search_result(package_hashtable, "1")
 
+            # set the initial datetime for each truck.
     truck1 = Truck(truck_id=1, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
     truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
     truck3 = Truck(truck_id=3, capacity=16, startTime=datetime(2023, 1, 1, 10, 0, 0))
@@ -51,23 +50,24 @@ def ui():
     for package in truck3.truck_packages:
         print(package)
 
+    # main menu with options to either load packages from the hashtable or to look up individual packages.
+    main_menu = input("----MAIN MENU----\n"
+                      "[1] Load the trucks with packages \n"
+                      "[2] Lookup individual package status \n"
+                      "(enter anything else to exit) \n")
 
-    main_menu = input("What would you like to do? \n"
-                      "[1] Load Trucks (Insert Packages) \n"
-                      "[2] Lookup Individual Package \n"
-                      "ENTER 0 TO EXIT \n")
-
-    # [0] Exit the program
-    if main_menu == "0":
-        print("You entered 0 or did not enter a valid menu option.")
-        print("Goodbye!")
+    # exit the program on bad input
+    if main_menu != "1" and main_menu != "2":
+        print("You didn't enter a valid menu option! Press [1] to load trucks and [2] to look up packages. Please try again.")
         SystemExit
 
-    # [1] Load Trucks
+
+
+    # [1] load the trucks, and start the simulation
+    # load the packages onto the trucks, call to graph starting point and greedy path, deliver packages and clear packages that have been delivered from the route.
     if main_menu == "1":
         print("The time is now 8:00")
-        print("Packages were inserted into hash table and packages were loaded onto trucks.")
-        # load the packages onto the trucks
+        print("Packages were inserted into the hashtable and loaded onto the trucks.")
         truck1.putPackageInDeliveryDict(all_packages)
         truck1.load_packages(all_packages, -1)
         truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
@@ -85,18 +85,18 @@ def ui():
         truck1.load_packages(all_packages,1)
         truck2.load_packages(all_packages, 1)
 
-        status_1 = input("\nEnter 1 to go package status #1 \n"
-                         "[1] See package status of all packages between 8:35 a.m. and 9:25 a.m \n"
-                         "ENTER 0 TO EXIT \n")
+        status_1 = input("\nYou can now see package status #1 \n"
+                         "[1] To see package status of packages delivered between 8:35 a.m. and 9:25 a.m \n"
+                         "(Enter anything else to exit) \n")
 
-        # [0] Exit the program
-        if status_1 == "0":
-            print("You entered 0 or did not enter a valid menu option.")
+        # exit the program on bad input
+        if status_1 != "1":
+            print("You didn't enter a valid menu option or chose to exit the program. Please try again.")
             SystemExit
 
-        # [1] Package status #1
+        # [1] view package status #1
         if status_1 == "1":
-            # the graph call might need to be elsewhere
+            # see package status 1 between times specified, call to greedy path for each truck if packages are in route, clear route for trucks if delievered.
             truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
             #truck3.route = Graph.greedy_path_algorithm(truck3.route, "3060 Lester St")
             truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
@@ -134,18 +134,19 @@ def ui():
 
             truck1.load_packages(all_packages, 2)
 
-            # Next: Fix the package #9 address
-            print("\nURGENT! IT IS 10:20AM. YOU NEED TO FIX THE ADDRESS FOR PACKAGE #9")
-            fix_pkg = input("Fix address package #9? Enter 1 for YES or 0 TO EXIT: ")
+            # Fix package #9's address
+            print("\nUpdate: The time is now 10:20AM. Package #9 has an address change and must be updated.")
+            fix_pkg = input("Would you like to fix this address? Enter 1 for 'YES' or anything else to exit: ")
 
-            # [0] Exit the program
-            if fix_pkg == "0":
-                print("You entered 0 or did not enter a valid menu option.")
+            # exit the program on bad input
+            if fix_pkg != "1":
+                print("You didn't enter a valid menu option, or chose to exit the program. Please try again.")
                 SystemExit
 
-            # [1] YES, fix the package
+            # [1] yes, fix the address for package #9. The package is on truck 2 and we will loop until the package is updated.
+            # Then call to greedy path for each truck and clear delivered route. If truck 1 has returned truck 3 can start. Print sucessful update of package #9 address.
             if fix_pkg == "1":
-                print("Fixing package #9 address to 410 S State St., Salt Lake City, UT 84111 ... ")
+                print("Changing package #9 address to 410 S State St., Salt Lake City, UT 84111")
                 for package in truck2.truck_packages:
                     if package.ID == 9:
                         truck2.route.remove(package.destination)
@@ -155,7 +156,7 @@ def ui():
                         package.zip = "84111"
                         package.notes = "Fixed the address"
                         truck2.route.append(package.destination)
-                        break  # stop looping once you've updated the package
+                        break
 
                 truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
                 truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
@@ -184,20 +185,21 @@ def ui():
                     Utils.clearDeliveredRoute(truck3)
                     truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
 
-                print("You fixed the address!")
+                print("The address has been fixed for package #9")
 
 
-                # Next: See package status 2
-                status_2 = input("\nNow, you can view package status #2\n"
-                                 "[1] See package status of all packages between 9:35 a.m. and 10:25 a.m \n"
-                                 "ENTER 0 TO EXIT\n")
+                # view package status 2
+                status_2 = input("\nsee package status #2\n"
+                                 "[1] To see package status of packages delivered between 9:35 a.m. and 10:25 a.m \n"
+                                 "(Enter anything else to exit)\n")
 
-                # [0] Exit the program
-                if status_2 == "0":
-                    print("You entered 0 or did not enter a valid menu option.")
+                # Exit program on bad input
+                if status_2 != "1":
+                    print("You didn't enter a valid menu option, or chose to exit the program. Please try again.")
                     SystemExit
 
                 if status_2 == "1":
+                    # set at hub to false,see package status 2 between times specified, call to greedy path for each truck if packages are in route, clear route for trucks.
                     if truck1.isInHub == False:
                         Utils.deliver_packages(truck1, 13, 12, 0,8, 0,0)
                         Utils.clearDeliveredRoute(truck1)
@@ -207,7 +209,7 @@ def ui():
                         Utils.deliver_packages(truck2, 14, 12, 0,9,5,1)
                         Utils.clearDeliveredRoute(truck2)
                         truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
-
+                    #  conditional to check if truck 1 is back to hub to determine truck 3 start time.
                     if truck1.isInHub:
                         truck1_current_time = truck1.finish_time
                         truck3.start_time = datetime(2023, 1, 1, truck1_current_time.hour, truck1_current_time.minute,
@@ -234,17 +236,17 @@ def ui():
                     Utils.see_package_status(truck2, 10, 23, 0,9,25,1)
                     Utils.see_package_status(truck3, 10, 23, 0,9,25,1)
 
-                    # Next: See package status 3
-                    status_3 = input("\nNow, you can view package status #3\n"
-                                     "[1] See package status of all packages between 12:03 p.m. and 1:12 p.m (13:12) \n"
-                                     "ENTER 0 TO EXIT\n")
+                    # view package status #3
+                    status_3 = input("\nYou can now see package status #3\n"
+                                     "[1] To see the status of packages delivered between 12:03 p.m. and 1:12 p.m  \n"
+                                     "(Enter anything else to exit)\n")
 
-                    # [0] Exit the program
-                    if status_3 == "0":
-                        print("You entered 0 or did not enter a valid menu option.")
+                    # Exit system on bad input
+                    if status_3 != "1":
+                        print("You didn't enter a valid menu option, or chose to exit the program. Please try again.")
                         SystemExit
 
-                    # [1] See package status 3
+                    # [1] See package status 3 between times specified, call to greedy path for trucks if packages are in route, clear route for trucks
                     if status_3 == "1":
                         if len(truck1.route) > 0:
                             Utils.deliver_packages(truck1, 17, 25, 0,8, 0,0)
@@ -270,17 +272,17 @@ def ui():
                         Utils.see_package_status(truck3, 13, 12, 0,10,23,1)
                         #Utils.see_package_status(13, 12, 0)
 
-                        # Last, the user can view the final results
-                        final = input("\nSEE FINAL RESULTS OF THE TRUCK DELIVERY SIMULATION?\n"
-                                      "[1] YES, see all package delivery details, total mileage, and time finished\n"
-                                      "ENTER 0 TO EXIT\n")
+                        # view the final results
+                        final = input("\nView final result of the delivery?\n"
+                                      "[1] Yes, see all package delivery details including finish time and total mileage.\n"
+                                      "(Enter anything else to exit)\n")
 
-                        # [0] Exit the program
-                        if final == "0" or final != "1":
-                            print("You entered 0 or did not enter a valid menu option.")
+                        # Exit system on bad input
+                        if final != "1":
+                            print("You didn't enter a valid menu option, or chose to exit the program. Please try again.")
                             SystemExit
 
-                        # [1] See final results and exit the program!
+                        # [1] Final output for the program
                         if final == "1":
                             if len(truck1.route) > 0:
                                 Utils.deliver_packages(truck1, 17, 25, 0, 8, 0, 0)
@@ -304,36 +306,36 @@ def ui():
                             Utils.see_package_status(truck1, 13, 12, 0,8,0,0)
                             Utils.see_package_status(truck2, 13, 12, 0,8,0,0)
                             Utils.see_package_status(truck3, 17, 12, 0,8,0,0)
-                            t1_miles = truck1.miles_traveled()
-                            t2_miles = truck2.miles_traveled()
-                            t3_miles = truck3.miles_traveled()
-                            total = t1_miles + t2_miles + t3_miles
-                            print("Truck 1: ", round(t1_miles, 2), "+ Truck 2: ", round(t2_miles, 2),
-                                  "+ Truck 3: ", round(t3_miles, 2), " TOTAL =", round(total, 2), "miles")
-                            print("All trucks are back at hub by", truck3.finish_time.time())
+                            truck1_miles = truck1.traveled_miles()
+                            truck2_miles = truck2.traveled_miles()
+                            truck3_miles = truck3.traveled_miles()
+                            total = truck1_miles + truck2_miles + truck3_miles
+                            print("Truck 1: ", round(truck1_miles, 2), "+ Truck 2: ", round(truck2_miles, 2),
+                                  "+ Truck 3: ", round(truck3_miles, 2), " TOTAL =", round(total, 2), "miles")
+                            print("All trucks have returned to the hub by", truck3.finish_time.time())
                             SystemExit
 
-    # Lookup Individual Package
+    # Menu option #2 lookup packages by ID
     if main_menu == "2":
-        print("Reminder: The time is 7:59AM. All packages are either AT_HUB or DELAYED_ON_FLIGHT")
+        print("Update: The time is 7:59AM. All packages are waiting at the hub or delayed.")
 
         checker = "1"
         while checker == "1":
-            # Prompt the user to get package ID to search for.
-            user_search_string = input("Enter the ID of the package you would like to search for: ")
+
+            user_search_string = input("Enter the package ID# you want to search: ")
             try:
                 user_search_int = int(user_search_string)
                 print_search_result(packageHashTable, user_search_int)
             except ValueError:
-                print("You did not enter an integer for the ID")
-            try_again = input("Enter 1 to search again. Enter anything else to exit: ")
+                print("You didn't enter a valid number for the ID")
+            try_again = input("Enter 1 to re-search or anything else to exit: ")
             checker = try_again
-        ui()
+        userinterface()
 
 
-# Program starts here
-print("Welcome to WGUPS! The time is 7:59AM")
-ui()
+# program entry
+print("WGU Delivery System: The time is 7:59AM")
+userinterface()
 
 
 
