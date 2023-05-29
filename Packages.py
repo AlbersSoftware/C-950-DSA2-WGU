@@ -20,7 +20,7 @@ class Package:
 
 
 
-
+# return the given fields
     def __str__(self):
         return f"{self.ID}, {self.destination}, {self.city}, {self.state}, {self.Zip}, {self.deadline}, {self.weight}, {self.notes}, {self.status}"
 # update status to on truck

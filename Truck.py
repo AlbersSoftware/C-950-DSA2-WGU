@@ -30,8 +30,10 @@ class Truck:
         self.route.append(package.destination)
     # Put package in delivery dictionary
     def putPackageInDeliveryDict(self, package_list):
-        graph.put_packages_in_delivery_dict(package_list)
+        graph.put_packages_in_delivery(package_list)
     # specify the order in which the packages go onto the trucks and set priority for packages 15,16,25,26,6,34,5, and 37.
+    # space complexity does not scale with the number of packages, as the memory used remains constant O(1) regardless of the input size.
+    # each individual conditional statement is constant but time is determined by the number of packages in the 'package list' and is O(n).
     def load_packages(self, package_list, priority):
         for package in package_list:
             if priority == -1 and self.truck_id == 1 and (package.ID == 15 or package.ID == 16):
