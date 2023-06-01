@@ -125,8 +125,8 @@ class Utils:
             #print("PP Success")
         else:
             trucks.isInHub = False
-        #print("Deliver Truck " + str(trucks.truck_id) + " Delivery:", *trucks.truck_packages,
-                  #sep="\n")  # prints using new lines instead of a giant line
+
+
 
 
 # package fields from the hashtable and read the package data.O(n) time where n is the row in the csv file. Space complexity is already accounted for within the hashtable space complexity and is O(n) space.

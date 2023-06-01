@@ -2,7 +2,7 @@ import csv
 from typing import List
 from Packages import Package
 
-# the HashTable class provides efficient key/value storage and retrieval.
+# the HashTable class provides efficient key/value storage and retrieval and satisfies section: D.
 class HashTable:
     # initialize the hash table and its size
 

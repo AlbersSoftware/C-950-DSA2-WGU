@@ -8,12 +8,14 @@ from utils import Utils
 from hashtable import print_search_result, get_packages
 from hashtable import HashTable
 packageHashTable = Utils.loadPackageData('Data/package_file.csv')
+# Chris Albers, ID:(009877757), C-950 DSA2- C1 requirement
 
+# C2 requirement- Process and flow of the program is determined here in the main. Each section is labled as you go through the CMI as to whats happening.
 
 def userinterface():
     pass
 
-
+# prints packages from the hashtable and with their ID, destination and status.
     print("Packages from the hashtable:")
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
@@ -30,23 +32,23 @@ def userinterface():
     # create a list of all packages
     all_packages = packageHashTable.get_all_values()
 
-    #truck3.start_time = truck2.finish_time
+
 
 
     #while truck1.finish_time is None:
         #truck3.start_time = truck1.finish_time
 
 
-    # print the packages on each truck
-    print("Truck 1 packages:")
+    # print the packages on each truck indicating they start unloaded.
+    print("Truck 1 packages: Not loaded yet")
     for package in truck1.truck_packages:
         print(package)
 
-    print("\nTruck 2 packages:")
+    print("\nTruck 2 packages: Not loaded yet")
     for package in truck2.truck_packages:
         print(package)
 
-    print("\nTruck 3 packages:")
+    print("\nTruck 3 packages: Not loaded yet")
     for package in truck3.truck_packages:
         print(package)
 
@@ -128,9 +130,9 @@ def userinterface():
                 truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
 
 
-            Utils.see_package_status(truck1, 9, 25, 0,8, 0,0)
-            Utils.see_package_status(truck2, 11, 25, 0,8,0,0)
-            Utils.see_package_status(truck3, 9, 25, 0,8,0,0)
+            Utils.see_package_status(truck1, 9, 25, 0,8,35,0)
+            Utils.see_package_status(truck2, 9, 25, 0,8,35,0)
+            Utils.see_package_status(truck3, 9, 25, 0,8,35,0)
 
             truck1.load_packages(all_packages, 2)
 
@@ -189,7 +191,7 @@ def userinterface():
 
 
                 # view package status 2
-                status_2 = input("\nsee package status #2\n"
+                status_2 = input("\nYou can now see package status #2\n"
                                  "[1] To see package status of packages delivered between 9:35 a.m. and 10:25 a.m \n"
                                  "(Enter anything else to exit)\n")
 
@@ -226,15 +228,11 @@ def userinterface():
                         Utils.deliver_packages(truck3, 13, 12, 0, 9, 5, 0)
                         Utils.clearDeliveredRoute(truck3)
                         truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
-                    '''Utils.deliver_packages(truck3, 13, 12, 0, truck3.start_time.hour, truck3.start_time.minute,
-                                           truck3.start_time.second)
-                    Utils.clearDeliveredRoute(truck3)
-                    if len(truck3.route) > 0:
-                        truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])'''
 
-                    Utils.see_package_status(truck1, 10, 23, 0,9,25,1)
-                    Utils.see_package_status(truck2, 10, 23, 0,9,25,1)
-                    Utils.see_package_status(truck3, 10, 23, 0,9,25,1)
+
+                    Utils.see_package_status(truck1, 10, 25, 0,9,35,1)
+                    Utils.see_package_status(truck2, 10, 25, 0,9,35,1)
+                    Utils.see_package_status(truck3, 10, 25, 0,9,35,1)
 
                     # view package status #3
                     status_3 = input("\nYou can now see package status #3\n"
@@ -267,10 +265,10 @@ def userinterface():
                             if len(truck3.route) > 0:
                                 truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
 
-                        Utils.see_package_status(truck1, 13, 12, 0,10,23,1)
-                        Utils.see_package_status(truck2, 13, 12, 0,10,23,1)
-                        Utils.see_package_status(truck3, 13, 12, 0,10,23,1)
-                        #Utils.see_package_status(13, 12, 0)
+                        Utils.see_package_status(truck1, 13, 12, 0,12,3,1)
+                        Utils.see_package_status(truck2, 13, 12, 0,12,3,1)
+                        Utils.see_package_status(truck3, 13, 12, 0,12,3,1)
+
 
                         # view the final results
                         final = input("\nView final result of the delivery?\n"
@@ -312,7 +310,7 @@ def userinterface():
                             total = truck1_miles + truck2_miles + truck3_miles
                             print("Truck 1: ", round(truck1_miles, 2), "+ Truck 2: ", round(truck2_miles, 2),
                                   "+ Truck 3: ", round(truck3_miles, 2), " TOTAL =", round(total, 2), "miles")
-                            print("All trucks have returned to the hub by", truck3.finish_time.time())
+                            print("All trucks have returned to the hub by", truck2.finish_time.time())
                             SystemExit
 
     # Menu option #2 lookup packages by ID
