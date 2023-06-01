@@ -22,7 +22,7 @@ def userinterface():
         if package:
             print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination, package.status))
 
-            #call for get packages and to search packages
+
 
             # set the initial datetime for each truck.
     truck1 = Truck(truck_id=1, capacity=16, startTime=datetime(2023, 1, 1, 8, 0, 0))
