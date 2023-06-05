@@ -19,8 +19,13 @@ def userinterface():
     print("Packages from the hashtable:")
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
+        if package.deadline != "9:05":
+            package.status = "AT_HUB"
+        if package.deadline == "9:05":
+            package.status = "DELAYED_ON_FLIGHT"
         if package:
             print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination, package.status))
+
 
 
 
@@ -319,6 +324,77 @@ def userinterface():
 
         checker = "1"
         while checker == "1":
+
+            user_time = input(
+                "Please enter a time to check the status of package(s). Use the following format, HH:MM:SS: ")
+            user_time_arr = user_time.split(":")
+            convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]), tzinfo=None)
+
+            truck1.putPackageInDeliveryDict(all_packages)
+            truck1.load_packages(all_packages, -1)
+            truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
+            Utils.deliver_packages(truck1, 13, 12, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck1)
+            truck1.load_packages(all_packages, 1)
+            truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
+            Utils.deliver_packages(truck1, 13, 12, 0, 8, 0, 0)
+
+
+
+            truck2.putPackageInDeliveryDict(all_packages)
+            truck2.load_packages(all_packages, -1)
+            truck2.route = Graph.greedy_path_algorithm(truck2.route, "4001 South 700 East")
+            Utils.deliver_packages(truck2, 13, 12, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck2)
+            truck2.load_packages(all_packages, -2)
+            truck2.route = Graph.greedy_path_algorithm(truck2.route, "4001 South 700 East")
+            Utils.deliver_packages(truck2, 13, 12, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck2)
+
+            truck2.load_packages(all_packages, 1)
+
+
+
+            truck3.putPackageInDeliveryDict(all_packages)
+            truck3.load_packages(all_packages, -1)
+            truck3.route = Graph.greedy_path_algorithm(truck3.route, "4001 South 700 East")
+            Utils.deliver_packages(truck3, 15, 12, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck3)
+            #truck3.putPackageInDeliveryDict(all_packages)
+            truck3.load_packages(all_packages, 1)
+
+            if len(truck1.route) > 0:
+                Utils.deliver_packages(truck1, 17, 25, 0, 8, 0, 0)
+                Utils.clearDeliveredRoute(truck1)
+                if len(truck1.route) > 0:
+                    truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
+
+            if len(truck2.route) > 0:
+                Utils.deliver_packages(truck2, 17, 25, 0, 8, 0, 0)
+                Utils.clearDeliveredRoute(truck2)
+                if len(truck2.route) > 0:
+                    truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+
+            if len(truck3.route) > 0:
+                Utils.deliver_packages(truck3, 17, 25, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                       truck3.start_time.second)
+                Utils.clearDeliveredRoute(truck3)
+                if len(truck3.route) > 0:
+                    truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+
+
+
+            Utils.see_package_status(truck1, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
+            Utils.see_package_status(truck2, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
+            Utils.see_package_status(truck3, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
+
+            if len(user_time_arr)!= 3:
+                print("bad input")
+                if user_time_arr != int:
+                    print("bad input 2")
+
+
+
 
             user_search_string = input("Enter the package ID# you want to search: ")
             try:
