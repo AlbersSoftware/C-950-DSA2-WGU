@@ -21,6 +21,7 @@ class Truck:
         self.capacity = capacity
         self.hub_location = "4001 South 700 East"
         self.isInHub = True
+        self.acutal_start_time = None
 
 
 

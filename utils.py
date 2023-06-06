@@ -23,16 +23,26 @@ class Utils:
     def see_package_status(trucks,hour, min, sec, startHr, startMin,startSec):
 
         print("Delivered Package on Truck " + str(trucks.truck_id))
+
+
         for pkg in trucks.truck_packages:
             if (pkg.status.startswith("DELIVERED AT")):
-                timeStr = pkg.status.replace("DELIVERED AT", "")
+                timeStr = pkg.status.replace("DELIVERED AT", "").strip()
                 timeArr = timeStr.split(":")
-                timeForDelivery = datetime(2023, 1, 1, int(timeArr[0]), int(timeArr[1]),
-                                                   int(timeArr[2]),tzinfo=None)
+                timeForDelivery = datetime(2023, 1, 1, int(timeArr[0]), int(timeArr[1]),int(timeArr[2]),tzinfo=None)
                 timeForEndStatus = datetime(2023, 1, 1, hour, min,sec,tzinfo=None)
                 timeForStartStatus = datetime(2023, 1, 1, startHr, startMin, startSec, tzinfo=None)
+
                 if (str( timeForDelivery - timeForEndStatus)).startswith("-1 day") and (str( timeForStartStatus - timeForDelivery)).startswith("-1 day"):
                     print(pkg)
+                else:
+                    if (str( trucks.acutal_start_time - timeForEndStatus)).startswith("-1 day") and (str( trucks.acutal_start_time - timeForDelivery)).startswith("-1 day"):
+                        pkg.status = "En-route"
+                        print(pkg)
+                    else:
+                        pkg.status = "At Hubb"
+                        print(pkg)
+
 
 
 # This updates all the packages with the same address and updated as delivered
@@ -81,6 +91,8 @@ class Utils:
         truck_start = trucks.start_time
         trucks.start_time = truck_start
         trucks.current_time = truck_start
+        if trucks.acutal_start_time == None:
+            trucks.acutal_start_time = trucks.start_time
         for i in range(0, len(trucks.route)-1):
             if i < len(trucks.truck_packages):
 

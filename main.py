@@ -40,6 +40,7 @@ def userinterface():
 
 
 
+
     #while truck1.finish_time is None:
         #truck3.start_time = truck1.finish_time
 
@@ -59,20 +60,149 @@ def userinterface():
 
     # main menu with options to either load packages from the hashtable or to look up individual packages.
     main_menu = input("----MAIN MENU----\n"
-                      "[1] Load the trucks with packages \n"
-                      "[2] Lookup individual package status \n"
+                      "[1] View final results and give a specific time to see if packages are at hub, en route or delievered \n"
+                      "[2] Load the trucks with packages and start the simulation \n"
+                      "[3] Lookup individual package status \n"
                       "(enter anything else to exit) \n")
 
     # exit the program on bad input
-    if main_menu != "1" and main_menu != "2":
+    if main_menu != "1" and main_menu != "2" and main_menu != "3":
         print("You didn't enter a valid menu option! Press [1] to load trucks and [2] to look up packages. Please try again.")
         SystemExit
 
+    if main_menu == "1":
+        # load trucks
+        truck1.putPackageInDeliveryDict(all_packages)
+        truck1.load_packages(all_packages, -1)
+        truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
+        Utils.deliver_packages(truck1, 9, 25, 0, 8, 0, 0)
+        Utils.clearDeliveredRoute(truck1)
+        truck2.putPackageInDeliveryDict(all_packages)
+        truck2.load_packages(all_packages, -1)
+        truck2.route = Graph.greedy_path_algorithm(truck2.route, "4001 South 700 East")
+        Utils.deliver_packages(truck2, 10, 25, 0, 8, 0, 0)
+        Utils.clearDeliveredRoute(truck2)
+        truck2.load_packages(all_packages, -2)
+        truck2.route = Graph.greedy_path_algorithm(truck2.route, "4001 South 700 East")
+        Utils.deliver_packages(truck2, 11, 30, 0, 8, 0, 0)
+        Utils.clearDeliveredRoute(truck2)
+        truck1.load_packages(all_packages, 1)
+        truck1.load_packages(all_packages, 2)
+        truck2.load_packages(all_packages, 1)
+        # fix address
+        for package in truck2.truck_packages:
+            if package.ID == 9:
+                truck2.route.remove(package.destination)
+                package.destination = "410 S State St"
+                package.city = "Salt Lake City"
+                package.state = "UT"
+                package.zip = "84111"
+                package.notes = "Fixed the address"
+                truck2.route.append(package.destination)
+                break
 
+        truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
+        truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+        truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+        Utils.deliver_packages(truck1, 10, 30, 0, 8, 0, 0)
+        Utils.clearDeliveredRoute(truck1)
+        truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
+        Utils.deliver_packages(truck2, 12, 30, 0, 9, 5, 0)
+        Utils.clearDeliveredRoute(truck2)
+        truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+
+        if truck1.isInHub:
+            truck1_current_time = truck1.finish_time
+            truck3.start_time = datetime(2023, 1, 1, truck1_current_time.hour, truck1_current_time.minute,
+                                         truck1_current_time.second)
+            truck3.putPackageInDeliveryDict(all_packages)
+            truck3.load_packages(all_packages, -1)
+            truck3.route = Graph.greedy_path_algorithm(truck3.route, "4001 South 700 East")
+            Utils.deliver_packages(truck3, 11, 30, 0, 9, 50, 0)
+            Utils.clearDeliveredRoute(truck3)
+            truck3.putPackageInDeliveryDict(all_packages)
+            truck3.load_packages(all_packages, 1)
+
+            truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+            Utils.deliver_packages(truck3, 12, 25, 0, 9, 5, 0)
+            Utils.clearDeliveredRoute(truck3)
+            truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+
+        # final output
+        if len(truck1.route) > 0:
+            Utils.deliver_packages(truck1, 17, 25, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck1)
+            if len(truck1.route) > 0:
+                truck1.route = Graph.greedy_path_algorithm(truck1.route, truck1.route[0])
+
+        if len(truck2.route) > 0:
+            Utils.deliver_packages(truck2, 17, 25, 0, 8, 0, 0)
+            Utils.clearDeliveredRoute(truck2)
+            if len(truck2.route) > 0:
+                truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
+
+        if len(truck3.route) > 0:
+            Utils.deliver_packages(truck3, 17, 25, 0, truck3.start_time.hour, truck3.start_time.minute,
+                                   truck3.start_time.second)
+            Utils.clearDeliveredRoute(truck3)
+            if len(truck3.route) > 0:
+                truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
+
+        Utils.see_package_status(truck1, 13, 12, 0, 8, 0, 0)
+        Utils.see_package_status(truck2, 13, 12, 0, 8, 0, 0)
+        Utils.see_package_status(truck3, 17, 12, 0, 8, 0, 0)
+        truck1_miles = truck1.traveled_miles()
+        truck2_miles = truck2.traveled_miles()
+        truck3_miles = truck3.traveled_miles()
+        total = truck1_miles + truck2_miles + truck3_miles
+        print("Truck 1: ", round(truck1_miles, 2), "+ Truck 2: ", round(truck2_miles, 2),
+              "+ Truck 3: ", round(truck3_miles, 2), " TOTAL =", round(total, 2), "miles")
+        print("All trucks have returned to the hub by", truck2.finish_time.time())
+       # look up package by ID and time
+        user_time = input(
+            "Please enter a time to check the status of package(s). Use the following format, HH:MM:SS: ")
+        user_time_arr = user_time.split(":")
+        convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]),
+                                tzinfo=None)
+
+        Utils.see_package_status(truck1, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
+        Utils.see_package_status(truck2, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
+        Utils.see_package_status(truck3, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
+
+        for i in range(len(packageHashTable.table)):
+            package = packageHashTable.search(i + 1)
+            #user_time_arr = [datetime.strptime(time_str, "%H:%M:%S") for time_str in user_time_arr]
+           # if package.deadline == "9:05" and user_time_arr < (9,5,0):
+              #  package.status = "DELAYED_ON_FLIGHT"
+            #if (user_time_arr[0] + user_time_arr[1] < truck1.start_time.strftime("%H:%M:%S")
+                #or user_time_arr[0] + user_time_arr[1] < truck2.start_time.strftime("%H:%M:%S") or user_time_arr[0] + user_time_arr[1] < truck3.start_time.strftime("%H:%M:%S")) and (package.status != "DELIVERED AT") and (package.status != "en-route"):
+                #package.status = "At Hub"
+
+           # if (user_time_arr[0] + user_time_arr[1] > truck1.start_time.strftime("%H:%M:%S") or user_time_arr[0] + user_time_arr[1] > truck2.start_time.strftime("%H:%M:%S") or user_time_arr[0] + user_time_arr[1] > truck3.start_time.strftime("%H:%M:%S")) and (package.status != "DELIVERED AT"):
+               # package.status = "en-route"
+            hour = int(user_time_arr[0])
+            minute = int(user_time_arr[1])
+            second = int(user_time_arr[2])
+           # if not any(package in Utils.see_package_status(truck, hour, minute, second, 8, 0, 0) for truck in [truck1, truck2, truck3]):
+                #package.status = "At Hubb"
+
+           # ///if (user_time_arr[0] + user_time_arr[1] + user_time_arr[2] < truck.start_time.strftime("%H:%M:%S") for truck in [truck1, truck2, truck3]):
+               # package.status = "At Hub"
+           # elif (user_time_arr[0] + user_time_arr[1] + user_time_arr[2] > truck.start_time.strftime("%H:%M:%S") for truck in
+                    # [truck1, truck2, truck3]) and package.status != "DELIVERED AT":
+                #package.status = "en-route"
+            #else:
+                #package.status = "Delivered"
+
+
+            if package:
+                print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination,package.status))
+
+        SystemExit
 
     # [1] load the trucks, and start the simulation
     # load the packages onto the trucks, call to graph starting point and greedy path, deliver packages and clear packages that have been delivered from the route.
-    if main_menu == "1":
+    if main_menu == "2":
         print("The time is now 8:00")
         print("Packages were inserted into the hashtable and loaded onto the trucks.")
         truck1.putPackageInDeliveryDict(all_packages)
@@ -316,10 +446,11 @@ def userinterface():
                             print("Truck 1: ", round(truck1_miles, 2), "+ Truck 2: ", round(truck2_miles, 2),
                                   "+ Truck 3: ", round(truck3_miles, 2), " TOTAL =", round(total, 2), "miles")
                             print("All trucks have returned to the hub by", truck2.finish_time.time())
+
                             SystemExit
 
     # Menu option #2 lookup packages by ID
-    if main_menu == "2":
+    if main_menu == "3":
         print("Update: The time is 7:59AM. All packages are waiting at the hub or delayed.")
 
         checker = "1"
@@ -336,6 +467,7 @@ def userinterface():
             Utils.deliver_packages(truck1, 13, 12, 0, 8, 0, 0)
             Utils.clearDeliveredRoute(truck1)
             truck1.load_packages(all_packages, 1)
+            truck1.load_packages(all_packages, 2)
             truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
             Utils.deliver_packages(truck1, 13, 12, 0, 8, 0, 0)
 
@@ -388,6 +520,17 @@ def userinterface():
             Utils.see_package_status(truck2, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
             Utils.see_package_status(truck3, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
 
+           # if(user_time_arr) > timelefthub and < DeliveredAt:
+               # print("Package Satus: En-route")
+
+           # if(user_time_arr) < timelefthub:
+                #print("Package Status: At hub")
+
+                #if (user_time_arr) > timelefthub and > DeliveredAt or == DeliveredAt:
+                    #print("Package Status: Delivered ")
+
+
+
             if len(user_time_arr)!= 3:
                 print("bad input")
                 if user_time_arr != int:
@@ -402,8 +545,8 @@ def userinterface():
                 print_search_result(packageHashTable, user_search_int)
             except ValueError:
                 print("You didn't enter a valid number for the ID")
-            try_again = input("Enter 1 to re-search or anything else to exit: ")
-            checker = try_again
+            '''try_again = input("Enter 1 to re-search or anything else to exit: ")
+            checker = try_again'''
         userinterface()
 
 
