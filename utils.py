@@ -88,6 +88,8 @@ class Utils:
     @staticmethod
     def deliver_packages(trucks,hour, min, sec, startHr, startMin,startSec):
         miles_between_node = graph.edge_weights
+        if trucks.hub_location is None:
+            trucks.hub_location = '4001 South 700 East'
         truck_start = trucks.start_time
         trucks.start_time = truck_start
         trucks.current_time = truck_start
@@ -119,11 +121,14 @@ class Utils:
             #print(trucks.isInHub)
             trucks.isInHub = True
             #print(trucks.truck_id)#######
-           # print(trucks.route)
+            #print(trucks.route)
+
             if trucks.route[0] != trucks.hub_location:
                 distance = miles_between_node[trucks.route[0], trucks.hub_location]
             else:
+
                 distance = miles_between_node[trucks.route[len(trucks.route)-1], trucks.hub_location]
+
             if distance == 0.0:
                 print("No route")
             speed = trucks.speed

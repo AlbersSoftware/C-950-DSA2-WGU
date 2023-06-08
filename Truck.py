@@ -25,6 +25,7 @@ class Truck:
 
 
 
+
     # Put package on truck and append the destination to the route.
     def insert(self, package):
         self.truck_packages.append(package)
