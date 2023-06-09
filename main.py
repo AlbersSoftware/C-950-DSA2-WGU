@@ -15,16 +15,7 @@ packageHashTable = Utils.loadPackageData('Data/package_file.csv')
 def userinterface():
     pass
 
-# prints packages from the hashtable and with their ID, destination and status. Set status to delayed if deadline == 9:05
-    print("Packages from the hashtable:")
-    for i in range(len(packageHashTable.table)):
-        package = packageHashTable.search(i + 1)
-        if package.deadline != "9:05":
-            package.status = "AT_HUB"
-        if package.deadline == "9:05":
-            package.status = "DELAYED_ON_FLIGHT"
-        if package:
-            print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination, package.status))
+
 
 
 
@@ -34,7 +25,7 @@ def userinterface():
     truck2 = Truck(truck_id=2, capacity=16, startTime=datetime(2023, 1, 1, 9, 5, 0))
     truck3 = Truck(truck_id=3, capacity=16, startTime=datetime(2023, 1, 1, 10, 0, 0))
 
-    # create a list of all packages
+    # create a list of all packages from hashtable
     all_packages = packageHashTable.get_all_values()
 
 

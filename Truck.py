@@ -9,7 +9,7 @@ class Truck:
 
 
 # initialize packages on the truck, route, empty list for completed route, delivery start and end time and start and location, capacity, mileage, speed, and if the truck is back to the hub.
-    def __init__(self, truck_id, capacity, startTime): # , type, value
+    def __init__(self, truck_id, capacity, startTime):
         self.truck_packages = []
         self.route = ["4001 South 700 East"]
         self.completedroute = []
