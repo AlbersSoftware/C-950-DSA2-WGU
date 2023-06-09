@@ -61,13 +61,13 @@ def userinterface():
     # main menu with options to either load packages from the hashtable or to look up individual packages.
     main_menu = input("----MAIN MENU----\n"
                       "[1] View final results and give a specific time to see if packages are at hub, en route or delievered \n"
-                      "[2] Lookup individual package status \n"
+                      "[2] Lookup individual package status by entering a time and a package ID # \n"
                       
                       "(enter anything else to exit) \n")
 
     # exit the program on bad input
     if main_menu != "1" and main_menu != "2":
-        print("You didn't enter a valid menu option! Press [1] to load trucks and [2] to look up packages. Please try again.")
+        print("You didn't enter a valid menu option! Press [1] View final results and give a specific time to see if packages are at hub, en route or delievered and [2] to look up packages by time and ID. (Program Closing) Please try again.")
         SystemExit
 
     if main_menu == "1":
@@ -159,10 +159,26 @@ def userinterface():
         print("Truck 1: ", round(truck1_miles, 2), "+ Truck 2: ", round(truck2_miles, 2),
               "+ Truck 3: ", round(truck3_miles, 2), " TOTAL =", round(total, 2), "miles")
         print("All trucks have returned to the hub by", truck2.finish_time.time())
-       # look up package by ID and time
+
+
+
+       # look up packages by time
+
         user_time = input(
             "Please enter a time to check the status of package(s). Use the following format, HH:MM:SS: ")
         user_time_arr = user_time.split(":")
+        if len(user_time_arr) != 3 or not all(segment.isdigit() for segment in user_time_arr):
+            print(
+                "You must enter The hours, minutes and seconds seprated by :, Here is 3 examples of accepted input: 10:45:00, 9:15:11, 13:09:00. (Program Closing) Please try again!")
+            raise SystemExit
+        hours = int(user_time_arr[0])
+        minutes = int(user_time_arr[1])
+        seconds = int(user_time_arr[2])
+
+        if not (0 <= hours <= 23) or not (0 <= minutes <= 59) or not (0 <= seconds <= 59):
+            print(
+                "You entered an unrealistic time, It must be less than 24 hours, less than 59 minutes and less than 59 seconds.(Program Closing) Please try again!")
+            raise SystemExit
         convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]),
                                 tzinfo=None)
         for package in truck2.truck_packages:
@@ -195,8 +211,7 @@ def userinterface():
 
         SystemExit
 
-    # [1] load the trucks, and start the simulation
-    # load the packages onto the trucks, call to graph starting point and greedy path, deliver packages and clear packages that have been delivered from the route.
+
 
 
 
@@ -210,8 +225,19 @@ def userinterface():
         while checker == "1":
 
             user_time = input(
-                "Please enter a time to check the status of package(s). Use the following format, HH:MM:SS: ")
+                "Please enter a time to check the status of packages. Use the following format, HH:MM:SS: ")
             user_time_arr = user_time.split(":")
+            if len(user_time_arr) != 3 or not all(segment.isdigit() for segment in user_time_arr):
+                print(" You must enter The hours, minutes and seconds seprated by :, Here is  3 examples of accepted input: 10:45:00, 9:15:11, 13:09:00. (Program Closing) Please try again!")
+                raise SystemExit
+            hours = int(user_time_arr[0])
+            minutes = int(user_time_arr[1])
+            seconds = int(user_time_arr[2])
+
+            if not (0 <= hours <= 23) or not (0 <= minutes <= 59) or not (0 <= seconds <= 59):
+                print("You entered an unrealistic time, It must be less than 24 hours, less than 59 minutes and less than 59 seconds. (Program Closing) Please try again!")
+                raise SystemExit
+
             convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]), tzinfo=None)
             #load trucks
             truck1.putPackageInDeliveryDict(all_packages)
@@ -299,23 +325,21 @@ def userinterface():
 
 
 
-            if len(user_time_arr)!= 3:
-                print("bad input")
-                if user_time_arr != int:
-                    print("bad input 2")
 
 
 
 
-            user_search_string = input("Enter the package ID# you want to search: ")
+
+            user_search_string = input("\n ***Enter the package ID# you want to search: \n")
             try:
                 user_search_int = int(user_search_string)
                 print_search_result(packageHashTable, user_search_int)
-                print("The search is over and the system is closing, Good Bye!")
+                print("The search is completed!(Program Closing) Good Bye!")
                 raise SystemExit
-            except ValueError:
-                print("You didn't enter a valid number for the ID")
 
+            except ValueError:
+                print("You didn't enter a valid number for the ID. You can enter a number 1 through 40. (Program Closing) Please try again!")
+                raise SystemExit
 
         userinterface()
 
