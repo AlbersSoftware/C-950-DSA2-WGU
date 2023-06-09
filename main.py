@@ -15,7 +15,7 @@ packageHashTable = Utils.loadPackageData('Data/package_file.csv')
 def userinterface():
     pass
 
-# prints packages from the hashtable and with their ID, destination and status.
+# prints packages from the hashtable and with their ID, destination and status. Set status to delayed if deadline == 9:05
     print("Packages from the hashtable:")
     for i in range(len(packageHashTable.table)):
         package = packageHashTable.search(i + 1)
@@ -58,7 +58,7 @@ def userinterface():
     for package in truck3.truck_packages:
         print(package)
 
-    # main menu with options to either load packages from the hashtable or to look up individual packages.
+    # main menu with options to either view final results and give a specific time to see if packages are at hub, en route or delievered and second option is to look up an individual package by ID# after a given time.
     main_menu = input("----MAIN MENU----\n"
                       "[1] View final results and give a specific time to see if packages are at hub, en route or delievered \n"
                       "[2] Lookup individual package status by entering a time and a package ID # \n"
@@ -71,7 +71,7 @@ def userinterface():
         SystemExit
 
     if main_menu == "1":
-        # load trucks
+        # load trucks and their priorities, Set the greedy path, deliver packages on truck 1 to 925, truck 2 to 1025, and then 1130 as priority is set. Clear route as they get delivered.
         truck1.putPackageInDeliveryDict(all_packages)
         truck1.load_packages(all_packages, -1)
         truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
@@ -89,7 +89,7 @@ def userinterface():
         truck1.load_packages(all_packages, 1)
         truck1.load_packages(all_packages, 2)
         truck2.load_packages(all_packages, 1)
-        # fix address
+        # fix address for package #9 as this is part of the final output, call to greedy path, deliver packages, and clear the route as before.
 
         for package in truck2.truck_packages:
             if package.ID == 9:
@@ -111,7 +111,7 @@ def userinterface():
         Utils.deliver_packages(truck2, 12, 30, 0, 9, 5, 0)
         Utils.clearDeliveredRoute(truck2)
         truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
-
+        # check if truck1 is back at hub and if so then update truck 3 start time to truck1 return time. load truck 3 priority and packages, deliver and clear route.
         if truck1.isInHub:
             truck1_current_time = truck1.finish_time
             truck3.start_time = datetime(2023, 1, 1, truck1_current_time.hour, truck1_current_time.minute,
@@ -129,7 +129,7 @@ def userinterface():
             Utils.clearDeliveredRoute(truck3)
             truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
 
-        # final output
+        # final output, check what hasn't been delivered yet for each truck and deliver them. Time is set high so all packages have been delivered clear the route and call to greedy path.
         if len(truck1.route) > 0:
             Utils.deliver_packages(truck1, 17, 25, 0, 8, 0, 0)
             Utils.clearDeliveredRoute(truck1)
@@ -148,7 +148,7 @@ def userinterface():
             Utils.clearDeliveredRoute(truck3)
             if len(truck3.route) > 0:
                 truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
-
+        # see package status of packages starting at 8am- finish for all trucks, tally the total miles traveled and display the total time traveled by all trucks and package delivery time by truck #.
         Utils.see_package_status(truck1, 13, 12, 0, 8, 0, 0)
         Utils.see_package_status(truck2, 13, 12, 0, 8, 0, 0)
         Utils.see_package_status(truck3, 17, 12, 0, 8, 0, 0)
@@ -162,16 +162,16 @@ def userinterface():
 
 
 
-       # look up packages by time
+       # look up package status by time, enter a valid time and see where packages are. Either 'at hub' 'en-route' or 'Delivered At- (specified time)'
 
         user_time = input(
             "Please enter a time to check the status of package(s). Use the following format, HH:MM:SS: ")
-        user_time_arr = user_time.split(":")
+        user_time_arr = user_time.split(":") # reads the time split, you still need to enter the ':'s. If the user misses a digit or if its not a digit print the bad input statement and close program.
         if len(user_time_arr) != 3 or not all(segment.isdigit() for segment in user_time_arr):
             print(
                 "You must enter The hours, minutes and seconds seprated by :, Here is 3 examples of accepted input: 10:45:00, 9:15:11, 13:09:00. (Program Closing) Please try again!")
             raise SystemExit
-        hours = int(user_time_arr[0])
+        hours = int(user_time_arr[0]) # create local variables to check if the hour, minute, and second arrays are valid.
         minutes = int(user_time_arr[1])
         seconds = int(user_time_arr[2])
 
@@ -181,9 +181,9 @@ def userinterface():
             raise SystemExit
         convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]),
                                 tzinfo=None)
-        for package in truck2.truck_packages:
+        for package in truck2.truck_packages: # if user enters a time less than 10:20AM make sure the address is still not fixed yet.
             if package.ID == 9 and int(user_time_arr[0]) < 10 or (int(user_time_arr[0]) == 10 and int(user_time_arr[1]) < 20):
-                #truck2.route.insert(package.destination)
+
                 package.destination = "300 State St"
                 package.city = "Salt Lake City"
                 package.state = "UT"
@@ -191,11 +191,11 @@ def userinterface():
                 package.notes = "Wrong address listed"
                 truck2.route.append(package.destination)
                 break
-
+        # converted time becomes the user input in see package status finish times.
         Utils.see_package_status(truck1, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
         Utils.see_package_status(truck2, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
         Utils.see_package_status(truck3, convert_time.hour, convert_time.minute, convert_time.second, 8, 0, 0)
-        print("\n*****IN ORDER BY ID*****\n")
+        print("\n*****IN ORDER BY ID*****\n") # loop through packages and print them by user ID to make it easier for the evaluators. The updated info travels with the ordered print as well not just when its ordered by truck.
         for i in range(len(packageHashTable.table)):
             package = packageHashTable.search(i + 1)
 
@@ -209,6 +209,8 @@ def userinterface():
 
                 print("Package ID: {}, Destination: {}, Status {}".format(package.ID, package.destination,package.status))
 
+
+        # end of program for menu option one
         SystemExit
 
 
@@ -223,7 +225,7 @@ def userinterface():
 
         checker = "1"
         while checker == "1":
-
+            # user inputs a time and like above must be in the correct format
             user_time = input(
                 "Please enter a time to check the status of packages. Use the following format, HH:MM:SS: ")
             user_time_arr = user_time.split(":")
@@ -239,7 +241,7 @@ def userinterface():
                 raise SystemExit
 
             convert_time = datetime(2023, 1, 1, int(user_time_arr[0]), int(user_time_arr[1]), int(user_time_arr[2]), tzinfo=None)
-            #load trucks
+            #load trucks, start delivery, call to greedy path and clear route in the same fashion as menu option 1.
             truck1.putPackageInDeliveryDict(all_packages)
             truck1.load_packages(all_packages, -1)
             truck1.route = Graph.greedy_path_algorithm(truck1.route, "4001 South 700 East")
@@ -257,7 +259,7 @@ def userinterface():
             truck1.load_packages(all_packages, 1)
             truck1.load_packages(all_packages, 2)
             truck2.load_packages(all_packages, 1)
-            # fix address
+            # fix address only this time the logic > is the opposite as menu option 1.
             for package in truck2.truck_packages:
                 if package.ID == 9 and (int(user_time_arr[0]) > 10 or (int(user_time_arr[0]) == 10 and int(user_time_arr[1]) >= 20)):
                     truck2.route.remove(package.destination)
@@ -278,7 +280,7 @@ def userinterface():
             Utils.deliver_packages(truck2, 12, 30, 0, 9, 5, 0)
             Utils.clearDeliveredRoute(truck2)
             truck2.route = Graph.greedy_path_algorithm(truck2.route, truck2.route[0])
-
+            # check if truck1 is back at hub and if so then update truck 3 start time to truck1 return time. load truck 3 priority and packages, deliver and clear route.
             if truck1.isInHub:
                 truck1_current_time = truck1.finish_time
                 truck3.start_time = datetime(2023, 1, 1, truck1_current_time.hour, truck1_current_time.minute,
@@ -295,7 +297,7 @@ def userinterface():
                 Utils.deliver_packages(truck3, 12, 25, 0, 9, 5, 0)
                 Utils.clearDeliveredRoute(truck3)
                 truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
-
+            # final delivery process which is the same as before in menu option 1.
             if len(truck1.route) > 0:
                 Utils.deliver_packages(truck1, 17, 25, 0, 8, 0, 0)
                 Utils.clearDeliveredRoute(truck1)
@@ -315,8 +317,7 @@ def userinterface():
                 if len(truck3.route) > 0:
                     truck3.route = Graph.greedy_path_algorithm(truck3.route, truck3.route[0])
 
-
-
+            # converted time becomes the user input in see package status finish times.
             Utils.see_package_status(truck1, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
             Utils.see_package_status(truck2, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
             Utils.see_package_status(truck3, convert_time.hour, convert_time.minute, convert_time.second, 8, 0,0)
@@ -328,7 +329,7 @@ def userinterface():
 
 
 
-
+            # Search for package by ID from the hashtable, validate input is correct, end of program.
 
             user_search_string = input("\n ***Enter the package ID# you want to search: \n")
             try:
@@ -345,7 +346,7 @@ def userinterface():
 
 
 # program entry
-print("WGU Delivery System: The time is 7:59AM")
+print("WGU Delivery System: Pick a Menu Option below")
 userinterface()
 
 

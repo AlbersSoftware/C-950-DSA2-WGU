@@ -65,7 +65,7 @@ def isfloat(num):
 # This function creates an instance of the graph and populates it with the csv data.
 # Then iterates over the data and creates vertices for each address using the 'add_vertex' function.
 # It also creates edges between vertices based on the distance values from the distance csv and if it can be conveted to a float or not.
-# O(n^2) space where n is the number of rows/ columns in the csv files and O(n^2) time as it needs to iterate over the addresses to add vertices and then iterates over the distances to add edges.
+# O(n^2) space where n is the number of rows by columns in the csv files and O(n^2) time as it needs to iterate over the addresses to add vertices and then iterates over the distances to add edges.
 # if all addresses have their own unique locations adding edges would be (n^2).
 def graph_instance(filename):
     data = get_distance_data(filename)
