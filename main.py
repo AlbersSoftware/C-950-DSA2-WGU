@@ -1,4 +1,4 @@
-import csv
+# Chris Albers, ID:(009877757), C-950 DSA2- C1 requirement
 from datetime import timedelta, datetime
 
 import Graph
@@ -8,7 +8,7 @@ from utils import Utils
 from hashtable import print_search_result, get_packages
 from hashtable import HashTable
 packageHashTable = Utils.loadPackageData('Data/package_file.csv')
-# Chris Albers, ID:(009877757), C-950 DSA2- C1 requirement
+
 
 # C2 requirement- Process and flow of the program is determined here in the main. Each section is labled as you go through the CMI as to whats happening.
 # time and space complexity of the program is O(n^2)
