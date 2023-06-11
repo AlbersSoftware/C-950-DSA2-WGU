@@ -92,7 +92,7 @@ def graph_instance(filename):
 # Initializes the graph and populates distance csv data.
 graph = graph_instance("Data/distance.csv")
 
-# trucks start at the hub and get the edge weights from teh graph which is the distances from locations in miles.
+# trucks start at the hub and get the edge weights from the graph which is the distances from locations in miles.
 def greedy_path_algorithm(route, start):
     graph_edge_weights = graph.edge_weights
 
@@ -110,7 +110,7 @@ def greedy_path_algorithm(route, start):
     # Start is the current location and min represents the distances or edge weights starting at 0.
     # if the edge weight exists, the distance is assigned to the distance var and if not distance will get an infinite value.
     # if the distance is smaller than the minimum distance and not equal to 0, a new minimum is updated.
-    # After iterating through all locations in 'truck route to sort' it checks if the minimum distance is present and if not appends it to the greedy path.
+    # After iterating through all locations in 'original_path' it checks if the minimum distance is present and if not appends it to the greedy path.
     # The loop continues until all locations are added and then returns to greedy path which is the better path to take.
     # For space, N represents the number of location in the route from the graph and the 'edge weights', 'greedy path' and 'original path' grows with the size of input O(n).
     # Inside the loop is a nested for loop that iterates the locations in 'truck route to sort' where (n) represents the number of locations in the route creating O(n^2) time complexity.
