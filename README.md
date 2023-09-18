@@ -25,3 +25,4 @@ algorithm, but I modified it to create
 a priority queue in order to meet all 
 the package deadlines.
 
+![DSA2 output](https://github.com/AlbersSoftware/C-950-DSA2-WGU/assets/65799182/9792ca7a-99dd-4c2b-8dd1-b50892e6baa7)
